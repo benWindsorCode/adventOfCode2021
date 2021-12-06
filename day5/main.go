@@ -7,6 +7,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func ProcessPair(pairStr string) ([2]int) {
@@ -64,21 +65,6 @@ func Min(first int, second int) (int) {
 	return second
 }
 
-func MaxBoard(lines [][2][2]int) (int, int) {
-	xMax, yMax := 0, 0
-
-	for _, line := range lines {
-		x0, y0, x1, y1 := line[0][0], line[0][1], line[1][0], line[1][0]
-
-		x, y := Max(x0, x1), Max(y0, y1)
-
-		xMax = Max(xMax, x)
-		yMax = Max(yMax, y)
-	}
-
-	return xMax, yMax
-}
-
 func GetVerticalLinePoints(x int, yStart int, yEnd int) ([][2]int) {
 	yMin := Min(yStart, yEnd)
 	yMax := Max(yStart, yEnd)
@@ -120,7 +106,10 @@ func GetVerticalOrHorizontal(lines [][2][2]int) ([][2][2]int) {
 }
 
 func Part1(inputs [][2][2]int) (int) {
+	// Filter down to all vertical/horizontal lines
 	verticalOrHorizontal := GetVerticalOrHorizontal(inputs)
+
+	// Track mapping of point to how many times point occurs
 	linePointsCounts := make(map[[2]int]int)
 	for _, line := range verticalOrHorizontal {
 		x0, y0, x1, y1 := line[0][0], line[0][1], line[1][0], line[1][1]
@@ -141,6 +130,7 @@ func Part1(inputs [][2][2]int) (int) {
 		}
 	}
 
+	// Per problem: count up all times point is touched >= 2 times
 	sum := 0
 	for _, count := range linePointsCounts {
 		if count >= 2 {
@@ -152,18 +142,16 @@ func Part1(inputs [][2][2]int) (int) {
 }
 
 func main() {
+	start := time.Now()
 	inputs, err := GetInput()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Get bottom right corner of boards - not used
-	boardX, boardY := MaxBoard(inputs)
-	fmt.Println(boardX)
-	fmt.Println(boardY)
-
 	fmt.Println("Part 1")
 	res := Part1(inputs)
+	elapsed := time.Since(start)
 	fmt.Println(res)
+	fmt.Printf("Part 1 took: %s", elapsed)
 }
