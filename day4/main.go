@@ -95,6 +95,21 @@ func isGridWinning(gridStatus [5][5]int) (bool) {
 	return false
 }
 
+func uncalledSum(grid [5][5]int, gridStatus [5][5]int) (int) {
+	// Sum the uncalled numbers of the winning grid
+	sum := 0
+
+	for row := 0; row < 5; row++ {
+		for col := 0; col < 5; col++ {
+			if gridStatus[row][col] == 0 {
+				sum = sum + grid[row][col]
+			}
+		}
+	}
+
+	return sum
+}
+
 func Part1(values []int, grids [100][5][5]int) {
 	// Record a '1' where each grid val gets called
 	var gridStatuses [100][5][5]int
@@ -103,10 +118,53 @@ func Part1(values []int, grids [100][5][5]int) {
 		for i, grid := range grids {
 			currentStatus := gridStatuses[i]
 			gridStatuses[i] = evaluateGrid(value, grid, currentStatus)
-		}
 
-		// TODO: see if any grids are winning this round
+			if isGridWinning(gridStatuses[i]) {
+				uncalledSum := uncalledSum(grids[i], gridStatuses[i])
+				answer := uncalledSum * value
+				fmt.Println(answer)
+				return
+			}
+		}
 	}
+}
+
+func Part2(values []int, grids [100][5][5]int) {
+	// Record a '1' where each grid val gets called
+	var gridStatuses [100][5][5]int
+
+	var winners []int
+	var winLast int
+	var winLastValue int
+	var winLastStatus [5][5]int
+
+	// This is not super pretty nested logic
+	for _, value := range values {
+		for i, grid := range grids {
+			currentStatus := gridStatuses[i]
+			gridStatuses[i] = evaluateGrid(value, grid, currentStatus)
+
+			if isGridWinning(gridStatuses[i]) {
+				alreadyWon := false
+				for _, winner := range winners {
+					if winner == i {
+						alreadyWon = true
+					}
+				}
+
+				if !alreadyWon {
+					winners = append(winners, i)
+					winLast = i
+					winLastValue = value
+					winLastStatus = gridStatuses[i]
+				}
+			}
+		}
+	}
+
+	uncalledSum := uncalledSum(grids[winLast], winLastStatus)
+	answer := uncalledSum * winLastValue
+	fmt.Println(answer)
 }
 
 func main() {
@@ -116,11 +174,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(positions)
+	fmt.Println("Part 1")
+	Part1(values, grids)
 
-	for _, grid := range grids {
-		fmt.Println(grid)
-	}
-
-	fmt.Println(len(grids))
+	fmt.Println("Part 2")
+	Part2(values, grids)
 }
