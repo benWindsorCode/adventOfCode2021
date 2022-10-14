@@ -1,5 +1,6 @@
 #!/usr/bin/dyalogscript
-processed ← ⍎¨ ⊃⎕NGET 'input.txt'1
+⍝ Load as csv, second arg of '4' means load numbers as numbers instead of strings. Ravel to make horizontal.
+processed ← ,⎕CSV 'input.txt' ⍬ 4
 diff ← {(¯1↓1⌽⍵)-(¯1↓⍵)}
 answer ← +/0>⍨diff processed
 ⎕ ← answer
