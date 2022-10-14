@@ -1,0 +1,5 @@
+#!/usr/bin/dyalogscript
+x ← (⎕CSV⍠'Separator' ' ' ) 'input.txt' ⍬ 4
+⍝ Replace directions with coord pairs, mult by magnitudes, sum and mult horiz * vertical totals for answer
+⍝ Note the sneaky use of string replacement which we then execute into actual APL vectors using ⍎¨
+⎕ ← ×/⊃+/(,0 1/x)×⍎¨('up' ⎕R '(0 ¯1)') ('down' ⎕R '(0 1)') ('forward' ⎕R '(1 0)') ,1 0 / x
