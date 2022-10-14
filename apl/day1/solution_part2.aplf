@@ -1,0 +1,4 @@
+#!/usr/bin/dyalogscript
+x ← ,⎕CSV 'input.txt' ⍬ 4
+⍝ Shift by 3, take diff (dropping last three as they cant be compared), then sum where > 0
+⎕ ← +/,0>⍨(¯3↓x)-⍨¯3↓3⌽[1]x
