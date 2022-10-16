@@ -1,0 +1,7 @@
+#!/usr/bin/dyalogscript
+x ← (⎕CSV⍠'Separator' ' ' ) 'input.txt' ⍬ 4
+⍝ Convert to changes in (x, y, aim) triples
+y←x[;2]×⍎¨('up'⎕R'(0 0 ¯1)')('down'⎕R'(0 0 1)')('forward'⎕R'(1 0 0)'),x[;1]
+⍝ Reduce (note APL does right to left so have to reverse data) as problem requires
+coords←⊃{(⍺[1]+⍵[1]) (⍵[2]+(⍵[3]×⍺[1])) (⍺[3]+⍵[3])}/⌽y
+⎕ ← coords[1]×coords[2]
